@@ -29,4 +29,18 @@ public abstract class Model {
 		
 		String sql = String.format("insert into %s(%s) values(%s);", model, fields, values);
 	}
+	
+	protected void delete() {
+		String model = this.getClass().getName().toLowerCase().substring(6) + "s";
+		int id = 0;
+		try {
+			Field field = this.getClass().getDeclaredField("id");
+			field.setAccessible(true);
+			id = field.getInt(this);
+		} catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		String sql = String.format("delete from %s where id = %s", model, id);
+	}
 }
