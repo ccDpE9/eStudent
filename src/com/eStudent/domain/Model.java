@@ -16,7 +16,6 @@ public abstract class Model {
 					if (field.getType().isAssignableFrom(Integer.TYPE)) values += field.get(this) + ", ";
 					else values += "\"" + field.get(this) + "\"" + ", ";
 				} catch (IllegalArgumentException | IllegalAccessException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 		}
@@ -37,9 +36,8 @@ public abstract class Model {
 			Field field = this.getClass().getDeclaredField("id");
 			field.setAccessible(true);
 			id = field.getInt(this);
-		} catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
 		}
 		String sql = String.format("delete from %s where id = %s", model, id);
 	}
