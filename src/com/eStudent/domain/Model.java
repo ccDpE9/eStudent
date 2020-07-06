@@ -3,30 +3,24 @@ package com.eStudent.domain;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class Model {
 	protected void save() {
 		String model = this.getClass().getName().toLowerCase().substring(6) + "s";
-		String values = "";
-		String fields = "";
-		for(Field field: this.getClass().getDeclaredFields()) {
+        Map<String, String> data = new HashMap<>();
+
+		for (Field field : this.getClass().getDeclaredFields()) {
 			field.setAccessible(true);
-				fields += field.getName() + ", ";
-				try {
-					if (field.getType().isAssignableFrom(Integer.TYPE)) values += field.get(this) + ", ";
-					else values += "\"" + field.get(this) + "\"" + ", ";
-				} catch (IllegalArgumentException | IllegalAccessException e) {
-					e.printStackTrace();
-				}
+			try {
+				data.put(field.getName(), "\"" + field.get(this) + "\"");
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
 		}
-		
-		fields = fields.substring(0, fields.length()-2);
-		values = values.substring(0, values.length()-2);
-		
-		fields = fields.substring(0, fields.length()-2);
-		values = values.substring(0, values.length()-2);
-		
-		String sql = String.format("insert into %s(%s) values(%s);", model, fields, values);
+
+		String sql = String.format("insert into %s(%s) values(%s);", model, String.join(", ", data.keySet()), String.join(", ", data.values()));
 	}
 	
 	protected void delete() {
